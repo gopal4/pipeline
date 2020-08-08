@@ -1,0 +1,26 @@
+pipeline {
+   agent any
+   
+   envirnment {
+   DOCKER_TAG = getDockertag()
+   }
+   stages {
+     stage('Build Docker Image) {
+       steps{
+       sh "docker build . -t gopal4/webapp:${DOCKER_TAG}
+       }
+     }
+     stage('docker hub push') {
+        steps {
+           withCredentials([string(cridentialsId: 'docker-hub', variable: 'dockerHubPwd')]) {
+           sh "docker login -u gopal4 -p $(dockerHubPwd)"
+           sh "docker push gopal4/webapp:${DOCKER_TAG}"
+           }
+        }
+     }
+   }
+  } 
+   def getDockerTag(){
+   def tag = sh shell: 'git rev-parse HEAD', returnstdout: true
+   return tag
+   }
