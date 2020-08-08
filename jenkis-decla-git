@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+        
+	    stages {
+	            stage('git checkout') {
+		                steps {
+				                git branch: 'master', credentialsId: 'n', url: 'https://github.com/gopal4/pipeline.git'
+						            }
+							            }
+								        }
+									}
