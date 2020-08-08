@@ -1,0 +1,21 @@
+currentBuild.displayName = "online-shoping-#"+currentBuild.number
+pipeline {
+   agent {
+   label any
+   }
+   
+   environmet {
+   PATH = /opt/maven/bin:$PATH
+   }
+   stages {
+   stage(git checout) {
+   steps {
+   git branch: 'master', credentilsId: 'n', url: 'https:github.com/gopal4/pipeline.git'
+      }
+   }
+   stage('maven build') {
+   steps {
+   sh 'mvn clean package'
+      }
+   }
+  }
