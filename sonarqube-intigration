@@ -1,0 +1,20 @@
+pipeline {
+   agent any
+   
+   environment {
+   PATH = /opt/maven3/bin:$PATH
+   }
+   stages {
+     stage('git checkout') {
+     steps {
+     git branch: 'master', credentialsId: 'n', url: 'http://github.com/gopal4/pipeline.git'
+     }
+     }
+     stage('build && SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-7') {
+                       sh 'mvn clean package sonar:sonar'
+                    }
+                }
+     }  
+}
