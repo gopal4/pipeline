@@ -1,31 +1,27 @@
+currentBuild.displayName = "app-java-#"+currentBuild.number
 pipeline {
-   agent any
-   }
-   
-   environment {
-   PATH = /opt/maven8/bin:PATH
-   ip = 172.17.0.3
-   }
-   stages{
-   stage('scm build') {
-    steps {
-    git branch: 'master', credentialsId: 'n', url: 'http://github.com/gopal4/pipeline.git'
-       }
-   }
-   stage('maven build') {
-   steps{
-   sh "mvn clean package"
-   }
-   }
-   stage('deploy dev') {
-   steps {
-   sshagent([tomcat_dep]) {
-   sh """
-   scp -o StrictHostKeyChecking=no taget/*.war ec2-user@$ip:/opt/tomcat8/webapps/
-    ssh ec2-user@$ip /opt/tomcat8/bin/shutdown.sh
-   ssh ec2-user@$ip /opt/tomcat8/bin/startup.sh
-   """
-   }
-   }
-   }
+    agent any
+    
+    environment {
+        PATH = "/opt/maven3/bin:$PATH"
+    }
+    stages {
+        stage('git checkout') {
+            steps {
+                git branch: 'master', credentialsId: 'n', url: 'https://github.com/gopal4/hello-world.git'
+            }
+        }
+        stage('maven build') {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+        stage('depoy_dev') {
+            steps {
+                sshagent(['tom_dev']) {
+                    sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/tomtom/webapp/target/webapp.war ec2-user@172.31.4.122:/opt/tomcat8/webapps/"
+                  }
+            }
+        }    
+    }
 }
