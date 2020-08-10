@@ -1,11 +1,11 @@
 pipeline {
-      agent any
-
-      stages {
+    agent any
+    
+    stages {
         stage('sample stage') {
-	steps {
-	echo "hello welcome"
-	}
-	}
-:}	
-
+            steps {
+                echo "welcome to the simple pipeline project"
+            }
+        }
+    }
+}
