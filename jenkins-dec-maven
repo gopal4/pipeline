@@ -1,21 +1,19 @@
 pipeline {
-   agent {
-   label any
-   }
-   
-   environmet {
-   PATH = /opt/maven/bin:$PATH
-   }
-   stages {
-   stage(git checout) {
-   steps {
-   git branch: 'master', credentilsId: 'n', url: 'https:github.com/gopal4/pipeline.git'
-      }
-   }
-   stage('maven build') {
-   steps {
-   sh 'mvn clean package'
-      }
-   }
-  }
-   
+    agent any
+    
+    environment {
+        PATH = "/opt/maven3/bin:$PATH"
+    }
+    stages{
+        stage('git checkout') {
+            steps {
+            git branch:'master', credentialsId: 'n', url: 'https://github.com/gopal4/hello-world.git'
+            }   
+        }
+        stage('maven build') {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+    }
+}
