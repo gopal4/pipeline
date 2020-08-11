@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    
+    environment {
+        PATH = "/opt/apache-maven-3.6.3/bin:$PATH"
+    }
+    
+    stages {
+        stage('git checkout') {
+            steps {
+            git 'https://github.com/gopal4/hello-world.git'
+            }
+        }
+        stage('mvn build') {
+            steps {
+            sh 'mvn clean package'
+            }
+        }
+        stage('dep_over_ssh') {
+            steps {
+       
+        sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible',
+        transfers: [sshTransfer(cleanRemote: false, 
+        excludes: '', 
+        execCommand: 'ansible-playbook /opt/playbooks/copywarfile.yml', 
+        execTimeout: 120000, 
+        flatten: false, makeEmptyDirs: false, 
+        noDefaultExcludes: false, patternSeparator: '[, ]+', 
+        remoteDirectory: '//opt//playbooks', 
+        remoteDirectorySDF: false, 
+        removePrefix: '', 
+        sourceFiles: 'webapp/target/*.war')], 
+        usePromotionTimestamp: false, 
+        useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+    }
+}
